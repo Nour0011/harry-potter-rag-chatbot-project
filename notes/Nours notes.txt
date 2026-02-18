@@ -1,5 +1,0 @@
-python api_server.py in powershell
-http://localhost:5000/api/health in chrom to test 
-python -m http.server 8000 in new powershell
-http://localhost:8000/ in chrom to test
-index.html ← CLICK THIS
