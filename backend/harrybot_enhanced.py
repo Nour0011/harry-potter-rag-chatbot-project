@@ -57,7 +57,16 @@ print("✅ Chat log file:", CHAT_LOG_FILE)
 # =============================================================================
 # CONFIGURATION (FROM YAML)
 # =============================================================================
-API_KEY = CONFIG["llm"]["api_key"]
+
+API_KEY_ENV = CONFIG["llm"].get("api_key_env", "QWEN_API_KEY")
+API_KEY = os.getenv(API_KEY_ENV, "")
+
+if not API_KEY:
+    raise RuntimeError(
+        f"Missing API key. Set environment variable '{API_KEY_ENV}' "
+        f"(e.g., in a .env file) before running."
+    )
+
 LLM_MODEL = CONFIG["llm"]["model"]
 QWEN_BASE_URL = CONFIG["llm"]["base_url"]
 
