@@ -30,6 +30,8 @@ from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 import yaml
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # ===============================
 # LOAD YAML CONFIG
