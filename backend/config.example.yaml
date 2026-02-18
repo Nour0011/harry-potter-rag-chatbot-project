@@ -1,0 +1,28 @@
+# ===============================
+# HARRY POTTER CHATBOT CONFIG
+# ===============================
+
+paths:
+  corpus_file: "../data/harry_potter_info.txt"
+  chat_log_file: "../data/chat_history.csv"
+
+llm:
+  provider: "qwen"
+  api_key_env: "QWEN_API_KEY"
+  model: "qwen-plus"
+  base_url: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+  max_tokens: 300
+  temperature: 0.7
+
+faiss:
+  model_name: "intfloat/e5-large-v2"
+  device: "cpu"
+  similarity_threshold: 0.55
+  min_context_score: 0.20
+  top_k: 3
+
+security:
+  enable_injection_detection: true
+
+language:
+  enable_arabic: true
