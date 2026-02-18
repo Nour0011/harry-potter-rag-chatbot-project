@@ -1,0 +1,11 @@
+# secrets (do NOT upload)
+backend/config.yaml
+.env
+
+# runtime logs
+data/chat_history.csv
+
+# python junk
+__pycache__/
+*.pyc
+.venv/

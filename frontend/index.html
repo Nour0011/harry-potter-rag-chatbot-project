@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>⚡ HarryBot — Wizarding Chat</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold:#d4af37;
+      --gold2:#ffd56a;
+      --bg1:#05020b;
+      --bg2:#0b0720;
+      --glass: rgba(16, 10, 30, 0.55);
+      --glass2: rgba(10, 6, 22, 0.75);
+      --text:#f3f0ff;
+      --muted: rgba(243,240,255,.65);
+      --red1:#740001;
+      --red2:#ae0001;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      overflow:hidden;
+      color:var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 800px at 30% 20%, #1a0f3a 0%, transparent 60%),
+                  radial-gradient(900px 700px at 80% 30%, #1e0b1b 0%, transparent 55%),
+                  linear-gradient(120deg, var(--bg1), var(--bg2));
+    }
+
+    .fog{
+      position:fixed; inset:-30%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(212,175,55,.10), transparent 40%),
+        radial-gradient(circle at 70% 45%, rgba(120,60,255,.10), transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(255,255,255,.06), transparent 55%);
+      filter: blur(35px);
+      animation: drift 18s ease-in-out infinite alternate;
+      pointer-events:none;
+      z-index:0;
+    }
+    @keyframes drift{
+      from{ transform: translate3d(-2%, -1%, 0) scale(1.02); }
+      to  { transform: translate3d(2%,  1%, 0) scale(1.06); }
+    }
+
+    canvas#stars{
+      position:fixed; inset:0;
+      z-index:1;
+    }
+
+    .app{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding:28px;
+      z-index:2;
+    }
+
+    .panel{
+      width:min(920px, 96vw);
+      height:min(720px, 90vh);
+      background: linear-gradient(180deg, rgba(16,10,30,.55), rgba(10,6,22,.78));
+      border: 1px solid rgba(212,175,55,.22);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 18px;
+      border-bottom:1px solid rgba(212,175,55,.15);
+      background: rgba(8,6,18,.35);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logo{
+      width:42px; height:42px;
+      border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, var(--gold2), var(--gold));
+      box-shadow: 0 0 30px rgba(212,175,55,.35);
+      display:grid; place-items:center;
+      color:#230b00;
+      font-weight:800;
+      font-family:Cinzel, serif;
+      letter-spacing:.5px;
+      user-select:none;
+    }
+    .title{
+      line-height:1.05;
+    }
+    .title .h{
+      font-family:Cinzel, serif;
+      font-weight:700;
+      font-size:18px;
+      letter-spacing:1.2px;
+    }
+    .title .s{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .btn{
+      border:1px solid rgba(212,175,55,.28);
+      background: rgba(10,6,22,.35);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:.2s ease;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      font-weight:600;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 0 24px rgba(212,175,55,.18);
+      border-color: rgba(212,175,55,.5);
+    }
+    .btn:active{ transform: translateY(0px) scale(.98); }
+
+    .chat{
+      flex:1;
+      padding:18px;
+      overflow:auto;
+      scroll-behavior:smooth;
+    }
+
+    .bubble{
+      max-width: 78%;
+      padding:12px 14px;
+      border-radius:16px;
+      margin: 10px 0;
+      position:relative;
+      animation: pop .22s ease;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+    }
+    @keyframes pop{
+      from{ opacity:0; transform: translateY(8px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .bubble.user{
+      margin-left:auto;
+      background: linear-gradient(135deg, rgba(116,0,1,.95), rgba(174,0,1,.85));
+      border: 1px solid rgba(255,213,106,.25);
+      color: #fff6d6;
+      box-shadow: 0 0 26px rgba(174,0,1,.15);
+    }
+    .bubble.bot{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(212,175,55,.18);
+      box-shadow: 0 0 30px rgba(212,175,55,.08);
+    }
+    .bubble.bot::before{
+      content:"⚡";
+      position:absolute;
+      left:-26px;
+      top:10px;
+      opacity:.85;
+      color: var(--gold2);
+      text-shadow: 0 0 12px rgba(212,175,55,.35);
+    }
+
+    .meta{
+      font-size:11px;
+      color: rgba(243,240,255,.55);
+      margin-top:6px;
+    }
+
+    .typing{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin: 10px 0;
+      color: var(--muted);
+      font-size: 13px;
+      user-select:none;
+    }
+    .dots{
+      display:flex; gap:5px;
+    }
+    .dot{
+      width:7px; height:7px;
+      border-radius:50%;
+      background: rgba(212,175,55,.7);
+      box-shadow: 0 0 10px rgba(212,175,55,.2);
+      animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2){ animation-delay:.15s; }
+    .dot:nth-child(3){ animation-delay:.3s; }
+    @keyframes bounce{
+      0%, 80%, 100%{ transform: translateY(0); opacity:.55; }
+      40%{ transform: translateY(-6px); opacity:1; }
+    }
+
+    .composer{
+      padding:14px;
+      border-top:1px solid rgba(212,175,55,.15);
+      display:flex;
+      gap:10px;
+      background: rgba(8,6,18,.35);
+    }
+
+    textarea{
+      flex:1;
+      height:52px;
+      max-height:140px;
+      resize:none;
+      border-radius:16px;
+      padding:14px 14px;
+      outline:none;
+      border:1px solid rgba(212,175,55,.22);
+      background: rgba(10,6,22,.55);
+      color: var(--text);
+      font-size:14px;
+    }
+    textarea:focus{
+      border-color: rgba(255,213,106,.6);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.12);
+    }
+
+    .send{
+      padding: 0 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(212,175,55,.28);
+      background: radial-gradient(circle at 30% 30%, rgba(255,213,106,.95), rgba(212,175,55,.9));
+      color:#230b00;
+      font-weight:800;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition:.2s ease;
+      box-shadow: 0 0 28px rgba(212,175,55,.18);
+      user-select:none;
+    }
+    .send:hover{ transform: translateY(-1px); box-shadow: 0 0 36px rgba(212,175,55,.28); }
+    .send:active{ transform: translateY(0px) scale(.98); }
+    .send:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+    .sparkle{
+      position:fixed;
+      width:6px;height:6px;
+      border-radius:50%;
+      background: var(--gold2);
+      box-shadow: 0 0 18px rgba(212,175,55,.45);
+      pointer-events:none;
+      z-index:999;
+      animation: fly 900ms ease-out forwards;
+    }
+    @keyframes fly{
+      from{ transform: translate(0,0) scale(1); opacity:1; }
+      to{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0; }
+    }
+
+    .chat::-webkit-scrollbar{ width: 10px; }
+    .chat::-webkit-scrollbar-track{ background: rgba(0,0,0,.15); }
+    .chat::-webkit-scrollbar-thumb{ background: rgba(212,175,55,.35); border-radius:10px; }
+    .chat::-webkit-scrollbar-thumb:hover{ background: rgba(212,175,55,.55); }
+  </style>
+</head>
+
+<body>
+  <div class="fog"></div>
+  <canvas id="stars"></canvas>
+
+  <div class="app">
+    <div class="panel">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">HP</div>
+          <div class="title">
+            <div class="h">HarryBot</div>
+            <div class="s">Chill wizarding answers · English & العربية</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="musicBtn">🎵 Music</button>
+          <button class="btn" id="resetBtn">🔄 Reset</button>
+          <button class="btn" id="healthBtn">🩺 Health</button>
+        </div>
+      </div>
+
+      <div class="chat" id="chat">
+        <div class="bubble bot">Welcome to Hogwarts. Ask me about spells, houses, characters, or anything in the wizarding world 🪄
+          <div class="meta">Tip: Press <b>Enter</b> to send · <b>Shift+Enter</b> for new line</div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <textarea id="input" placeholder="Type your question..."></textarea>
+        <button class="send" id="sendBtn">Send ✨</button>
+      </div>
+    </div>
+  </div>
+
+<audio id="bgMusic" loop>
+  <source src="hedwigs_song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // ✅ Make sure your Flask server is running on this:
+  const API_BASE = "http://localhost:5000/api";
+
+  // ===== star canvas =====
+  const canvas = document.getElementById("stars");
+  const ctx = canvas.getContext("2d");
+  let W, H, stars;
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    stars = Array.from({length: 260}, () => ({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.6 + 0.2,
+      a: Math.random()*0.7 + 0.1,
+      s: Math.random()*0.35 + 0.05
+    }));
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  function drawStars(){
+    ctx.clearRect(0,0,W,H);
+    for(const st of stars){
+      st.y += st.s;
+      if(st.y > H+10) st.y = -10;
+      ctx.globalAlpha = st.a;
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  // ===== UI elements =====
+  const chat = document.getElementById("chat");
+  const input = document.getElementById("input");
+  const sendBtn = document.getElementById("sendBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const healthBtn = document.getElementById("healthBtn");
+  const musicBtn = document.getElementById("musicBtn");
+  const bgMusic = document.getElementById("bgMusic");
+  let playing = false;
+
+  function scrollBottom(){ chat.scrollTop = chat.scrollHeight; }
+
+  function bubble(type, text){
+    const div = document.createElement("div");
+    div.className = `bubble ${type}`;
+    div.textContent = text;
+    chat.appendChild(div);
+    scrollBottom();
+    return div;
+  }
+
+  function typingOn(){
+    const wrap = document.createElement("div");
+    wrap.className = "typing";
+    wrap.id = "typing";
+    wrap.innerHTML = `
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div>Harry is casting a reply…</div>
+    `;
+    chat.appendChild(wrap);
+    scrollBottom();
+  }
+
+  function typingOff(){
+    const el = document.getElementById("typing");
+    if(el) el.remove();
+  }
+
+  function sparkleBurst(x, y){
+    for(let i=0;i<14;i++){
+      const sp = document.createElement("div");
+      sp.className = "sparkle";
+      sp.style.left = (x + (Math.random()*10-5)) + "px";
+      sp.style.top  = (y + (Math.random()*10-5)) + "px";
+      const dx = (Math.random()*220 - 110).toFixed(0) + "px";
+      const dy = (Math.random()*200 - 140).toFixed(0) + "px";
+      sp.style.setProperty("--dx", dx);
+      sp.style.setProperty("--dy", dy);
+      document.body.appendChild(sp);
+      setTimeout(()=>sp.remove(), 900);
+    }
+  }
+
+  async function send(){
+    const q = input.value.trim();
+    if(!q) return;
+
+    bubble("user", q);
+    input.value = "";
+    sendBtn.disabled = true;
+    typingOn();
+
+    const r = sendBtn.getBoundingClientRect();
+    sparkleBurst(r.left + r.width/2, r.top + r.height/2);
+
+    try{
+      const res = await fetch(`${API_BASE}/chat`, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({question: q})
+      });
+      const data = await res.json();
+      typingOff();
+
+      if(data.status === "success"){
+        bubble("bot", data.answer);
+      }else{
+        bubble("bot", "⚠️ " + (data.error || "Something went wrong."));
+      }
+    }catch(e){
+      typingOff();
+      bubble("bot", "⚠️ I couldn't reach the API. Make sure api_server.py is running on http://localhost:5000");
+    }finally{
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  sendBtn.addEventListener("click", send);
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      send();
+    }
+  });
+
+  resetBtn.addEventListener("click", async ()=>{
+    try{
+      await fetch(`${API_BASE}/reset`, {method:"POST"});
+      chat.innerHTML = "";
+      bubble("bot", "✨ Reset done. Ask me anything about Harry Potter 🪄");
+    }catch(e){
+      bubble("bot", "⚠️ Reset failed. Try again.");
+    }
+  });
+
+  healthBtn.addEventListener("click", async ()=>{
+    try{
+      const res = await fetch(`${API_BASE}/health`);
+      const data = await res.json();
+      bubble("bot", `🩺 API says: ${data.status} (${data.service})`);
+    }catch(e){
+      bubble("bot", "⚠️ Health check failed.");
+    }
+  });
+
+  musicBtn.addEventListener("click", ()=>{
+    if(playing){
+      bgMusic.pause();
+      musicBtn.textContent = "🎵 Music";
+    }else{
+      bgMusic.play().catch(()=>{});
+      musicBtn.textContent = "🔇 Mute";
+    }
+    playing = !playing;
+  });
+
+  input.focus();
+</script>
+</body>
+</html>
