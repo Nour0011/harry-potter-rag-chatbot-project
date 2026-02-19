@@ -2,11 +2,7 @@
 
 A secure Retrieval-Augmented Generation (RAG) chatbot built with **FAISS**, **Qwen LLM**, and **Flask API**, supporting both **English and Arabic**, with prompt injection protection and conversational memory.
 
-
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![Flask](https://img.shields.io/badge/Flask-API-black)
-![FAISS](https://img.shields.io/badge/FAISS-Vector%20Search-orange)
-![RAG](https://img.shields.io/badge/Architecture-RAG-purple)
+**Architecture Type:** Secure RAG (Retrieval-Augmented Generation) System
 
 ---
 
@@ -15,8 +11,6 @@ A secure Retrieval-Augmented Generation (RAG) chatbot built with **FAISS**, **Qw
 ### 💬 Chatbot UI
 ![Chatbot UI](assets/ui.png)
 
----
-
 ### 🔄 System Architecture
 ![System Architecture](assets/architecture.png)
 
@@ -24,31 +18,31 @@ A secure Retrieval-Augmented Generation (RAG) chatbot built with **FAISS**, **Qw
 
 ## 🚀 Features
 
-- 🔍 FAISS semantic similarity search
-- 🧠 Retrieval-Augmented Generation (RAG)
-- 🤖 Qwen LLM via OpenAI-compatible API
-- 🌍 Arabic ↔ English automatic translation
-- 🛡️ Prompt injection detection
-- 💬 Conversational memory (dialog context)
-- 🗂️ CSV logging with dialog IDs
-- ⚡ Flask REST API backend
-- 🎨 Custom frontend UI
+- 🔍 FAISS semantic similarity search  
+- 🧠 Retrieval-Augmented Generation (RAG)  
+- 🤖 Qwen LLM via OpenAI-compatible API  
+- 🌍 Arabic ↔ English automatic translation  
+- 🛡️ Prompt injection detection  
+- 💬 Conversational memory (dialog context)  
+- 🗂️ CSV logging with dialog IDs  
+- ⚡ Flask REST API backend  
+- 🎨 Custom frontend UI  
 
 ---
 
 ## 🧠 How It Works
 
-1. User sends a question via UI
-2. System detects input language (Arabic or English)
-3. Arabic questions are translated to English
-4. Prompt injection detection is applied
-5. Relevance to Harry Potter domain is checked
-6. FAISS retrieves top-k relevant knowledge chunks
-7. Context is built with conversation history
-8. Prompt is sent to Qwen LLM
-9. Answer is translated back (if needed)
-10. Conversation is logged to CSV
-11. Answer is displayed in UI
+1. User sends a question via UI  
+2. System detects input language (Arabic or English)  
+3. Arabic questions are translated to English  
+4. Prompt injection detection is applied  
+5. Relevance to Harry Potter domain is checked  
+6. FAISS retrieves top-k relevant knowledge chunks  
+7. Context is built with conversation history  
+8. Prompt is sent to Qwen LLM  
+9. Answer is translated back (if needed)  
+10. Conversation is logged to CSV  
+11. Answer is displayed in UI  
 
 ---
 
@@ -85,19 +79,15 @@ harry-potter-rag-chatbot-project/
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/harry-potter-rag-chatbot-project.git
+git clone https://github.com/Nour0011/harry-potter-rag-chatbot-project.git
 cd harry-potter-rag-chatbot-project
 ```
-
----
 
 ### 2️⃣ Install dependencies
 
 ```bash
 pip install -r requirements
 ```
-
----
 
 ### 3️⃣ Create your `.env` file
 
@@ -117,7 +107,7 @@ QWEN_API_KEY=your_real_api_key_here
 
 ---
 
-### 4️⃣ Create config.yaml
+### 4️⃣ Create `config.yaml`
 
 Inside `backend/`, copy:
 
@@ -164,43 +154,43 @@ in your browser.
 
 ## 🛡️ Security Features
 
-- Prompt injection detection using regex rules
-- Domain restriction (Harry Potter only)
-- Non-HP questions politely refused
-- Environment variable API key protection
-- Sensitive files excluded via `.gitignore`
+- Prompt injection detection using regex rules  
+- Domain restriction (Harry Potter only)  
+- Non-HP questions politely refused  
+- Environment variable API key protection  
+- Sensitive files excluded via `.gitignore`  
 
 ---
 
 ## 📊 Technologies Used
 
-- Python
-- Flask
-- FAISS
-- SentenceTransformers (E5-large-v2)
-- Qwen LLM (OpenAI-compatible API)
-- HTML/CSS/JS frontend
-- python-dotenv
-- YAML configuration
+- Python  
+- Flask  
+- FAISS  
+- SentenceTransformers (E5-large-v2)  
+- Qwen LLM (OpenAI-compatible API)  
+- HTML/CSS/JS frontend  
+- python-dotenv  
+- YAML configuration  
 
 ---
 
 ## 🌍 Language Support
 
-- English
-- Arabic
-- Automatic bidirectional translation
+- English  
+- Arabic  
+- Automatic bidirectional translation  
 
 ---
 
 ## 🧩 API Endpoints
 
-| Method | Endpoint        | Description |
-|--------|----------------|-------------|
-| POST   | `/api/chat`    | Send a question |
-| POST   | `/api/reset`   | Reset conversation |
-| GET    | `/api/stats`   | Get statistics |
-| GET    | `/api/health`  | Health check |
+| Method | Endpoint      | Description              |
+|--------|--------------|--------------------------|
+| POST   | /api/chat    | Send a question          |
+| POST   | /api/reset   | Reset conversation       |
+| GET    | /api/stats   | Get statistics           |
+| GET    | /api/health  | Health check             |
 
 ---
 
@@ -208,28 +198,30 @@ in your browser.
 
 This project demonstrates:
 
-- Practical RAG implementation
-- Secure LLM integration
-- Multilingual NLP pipeline
-- Backend + Frontend integration
-- Real-world AI system architecture
-- Production-style configuration handling
+- Practical RAG implementation  
+- Secure LLM integration  
+- Multilingual NLP pipeline  
+- Backend + Frontend integration  
+- Real-world AI system architecture  
+- Production-style configuration handling  
+
+This project simulates a production-ready AI chatbot system with secure configuration management, multilingual NLP handling, and domain-restricted retrieval logic.
 
 ---
 
 ## 🎯 Future Improvements
 
-- Docker deployment
-- Vector database upgrade (Pinecone / Milvus)
-- Authentication layer
-- Cloud deployment
-- Model switching support
+- Docker deployment  
+- Vector database upgrade (Pinecone / Milvus)  
+- Authentication layer  
+- Cloud deployment  
+- Model switching support  
 
 ---
 
 ## 👩‍💻 Author
 
-Nour Al Dakkak  
+**Nour Al Dakkak**  
 AI Engineering Student  
 Passionate about AI systems, automation, and secure LLM applications.
 
