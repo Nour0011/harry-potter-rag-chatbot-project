@@ -2,6 +2,12 @@
 
 A secure Retrieval-Augmented Generation (RAG) chatbot built with **FAISS**, **Qwen LLM**, and **Flask API**, supporting both **English and Arabic**, with prompt injection protection and conversational memory.
 
+
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Flask](https://img.shields.io/badge/Flask-API-black)
+![FAISS](https://img.shields.io/badge/FAISS-Vector%20Search-orange)
+![RAG](https://img.shields.io/badge/Architecture-RAG-purple)
+
 ---
 
 ## 📸 Demo
